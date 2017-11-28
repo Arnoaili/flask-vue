@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="fonts/iconfont.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+	</head>
+<body>
+	<div class="app-cam" id="lgapp">
+	      <form>
+	          <input hidden v-model="rmpwd" id="rmpwd">
+	          <input type="text" v-model="user.account" class="text" placeholder="请输入用户名">
+	          <input type="password" v-model="user.pwd" placeholder="请输入密码">
+						<div class="checkbox remember-password-container">
+                <input type="checkbox" value="remember-me" v-model="rememberPassword" id="remember-password-checkbox" v-on:click="doRememberPassword($event)">
+                <label for="remember-password-checkbox">
+                    Remember me
+                </label>
+            </div>
+	          <div class="submit"><input v-on:click="login" type="button"  value="登陆"></div>
+	        <ul class="new">
+	            <li class="new_left"><p><a href="#" v-on:click="fprgotpwd">忘记密码?</a></p></li>
+	            <li class="new_right"><p class="sign">新用户?<a href="#" v-on:click="regit">注册</a></p></li>
+	            <div class="clearfix"></div>
+	        </ul>
+	    </form>
+	  </div>
+
+<script>
+new Vue({
+    el:'#lgapp',
+    data:{
+        user:{
+            account:getCookie("cache_account"),
+            pwd:getCookie("cache_pwd"),
+        },
+        rmpwd:getCookie("cache_pwd_checked"),
+    },
+    methods:{
+        login:function () {
+            var user=this.user,rd_remember=this.rmpwd;
+            $.ajax({
+                url:loginURL,
+                type: 'post',
+                dataType:'json',
+                data: {
+                    'user': user,
+                },
+                success: function(result){
+                    if(result.status==1){
+                        setCookie("cache_account",user.account,30);//记住账号
+
+                        //记住密码
+                        if(rd_remember=='true'){
+                            setCookie("cache_pwd",user.pwd,30);
+                            setCookie("cache_pwd_checked",true,30);//勾选状态
+                        }
+                        else{
+                            setCookie("cache_pwd","",30);
+                            setCookie("cache_pwd_checked",false,30);//勾选状态
+                        }
+                        window.location.href=result.url;
+                    }
+										else {
+                        $.alert({
+                            title: '课程签到系统',
+                            type: 'red',
+                            content: result.msg,
+                        });
+                    }
+                }
+            })
+        },
+        fprgotpwd:function(){
+            $.alert({
+                title: '课程签到系统',
+                type: 'red',
+                content: '请联系管理员重置密码！',
+            });
+        },
+        regit:function(){
+            $.alert({
+                title: '课程签到系统',
+                type: 'red',
+                content: '请向管理员申请账号！',
+            });
+        }
+    },
+		filters:{
+        getstatus:function (rmp) {
+            if(rmp=='true'){
+                return true;
+            }
+            else{
+                return false;
+            }
+        },
+    }
+    }）
+
+		function getCookie(name)
+		{
+		    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+		    if(arr=document.cookie.match(reg))
+		        return unescape(arr[2]);
+		    else
+		        return null;
+		}
+		function setCookie(c_name,value,expiredays)
+		{
+		    var exdate=new Date()
+		    exdate.setDate(exdate.getDate()+expiredays)
+		    document.cookie=c_name+ "=" +escape(value)+ ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+		}
+		function delCookie(name)
+		{
+		    var exp = new Date();
+		    exp.setTime(exp.getTime() - 1);
+		    var cval=getCookie(name);
+		    if(cval!=null)
+		        document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+		}
+
+</script>
+</body>
+
+
+</html>

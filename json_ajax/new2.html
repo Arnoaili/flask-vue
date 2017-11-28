@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <title>vue js</title>
+    <style>
+      .completed {
+        text-decoration: line-through;
+      }
+
+      .something {
+        color: red;
+      }
+    </style>
+		<script src="js/vue.js"></script>
+		<script src="js/vue-resource.js"></script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div id="app">
+        <task-app :list="tasks"></task-app>
+		<input type="button" value="点击获取" @click="getCustomers()"/>
+      </div>
+
+      <template id="task-template">
+        <ul>
+          <li v-for="task in list">
+            {{ task.id }} | {{ task.author }} | {{ task.name }} | {{ task.price }}
+          </li>
+
+		 <!--
+		 {{ list.id }} | {{ list.author }} | {{ list.name }} | {{ list.price }}
+		 -->
+        </ul>
+      </template>
+
+
+      <script>
+        Vue.component('task-app', {//要应用的标签
+          template: '#task-template',//模板id
+          props: ['list']//请求的json
+        })
+      </script>
+
+      <script>
+
+        var demo = new Vue({
+          el: '#app',
+          data: {
+            tasks: "" //为空，可以是null
+          },
+          ready: function() {
+            this.getCustomers()
+          },
+          methods: {
+            getCustomers: function() {
+              this.$http.get('http://127.0.0.1:5000/tt')
+                .then(function(response) {
+                  this.$set('tasks', response.data)
+                })
+                .catch(function(response) {
+                  console.log(response)
+                })
+            }
+          }
+        })
+      </script>
+  </body>
+
+</html>

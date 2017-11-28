@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<head>
+<meta charset="utf-8">
+<title>教程</title>
+<script type=text/javascript src="{{url_for('static', filename='jquery.min.js')}}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      $("#bb").click(function(){
+          var data = {
+                        data: JSON.stringify({"lesson": "Operation System", "score": 100})
+                       }
+          $.ajax({
+                    url:"/test",
+                    type: 'POST',
+                    data: data,
+                    success: function (msg) {
+                                                  alert(msg.name+"\n"+msg.lesson);
+                                                  $('#div1').text(msg.name);
+                                                  }
+                  });
+          });
+  });
+</script>
+
+<script>
+$(document).ready(function(){
+  $("#btn1").click(function(data,status){
+    $('#test').load('static/test.txt');
+    alert("数据：" + data + "\n状态：" + status);
+  })
+})
+</script>
+
+
+</head>
+
+<body>
+
+<div id="div1"><h2>使用 jQuery AJAX 修改文本内容</h2></div>
+
+<button id="bb">获取其他内容</button>
+
+<h3 id="test">jQuery AJAX</h3>
+<button id="btn1" type="button">get</button>
+
+</body>
+
+</html >

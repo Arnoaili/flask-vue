@@ -1,0 +1,76 @@
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<head>
+
+<meta charset="utf-8">
+
+<title>ajax Example</title>
+
+<script type=text/javascript src="{{url_for('static', filename='jquery.min.js')}}"></script>
+<script type=text/javascript>
+var $SCRIPT_ROOT = '/';
+$(document).ready(function(){
+	$('#sub').click(function(){
+		$.post($SCRIPT_ROOT,
+		{
+		'n1': $('input[name=n1]').val(),
+		'n2': $('input[name=n2]').val(),
+		'n3': $('input[name=n3]').val(),
+		'n4': $('input[name=n4]').val(),
+		'name': "你好！"
+		},
+		function(data,status){
+			console.log(data);
+			alert("您查询的订单号为："+data.max);
+			$('#max').text(data.max);
+			$('#min').text(data.min);
+			$('#sum').text(data.sum);
+			$('#name').text(data.name);
+		}
+		);
+	});
+	
+
+	$('#btn').click(function(){
+		$('#test').load("{{url_for('static',filename='test.txt')}}")
+	});
+});
+</script>
+
+</head>
+</body>
+
+<h1>ajax Example</h1>
+
+<div>
+
+<p>在下面 3 个文本框中输入数字，然后点击按钮。</p>
+
+<input name="n1" type="text" />
+
+<input name="n2" type="text" />
+
+<input name="n3" type="text" />
+
+<input name="n4" type="text" />
+
+<input type="button" value="submit" id="sub"/>
+
+
+<p>最大数：<span id=max>?</span></p>
+
+<p>最小数：<span id=min>?</span></p>
+<p>和：<span id=sum>?</span></p>
+<p>名字：<span id=name>?</span></p>
+
+
+</div>
+
+<h3 id="test">请点击下面的按钮，通过 jQuery AJAX 改变这段文本。</h3>
+<button id="btn" type="button">获得外部的内容</button>
+
+</body>
+
+</html>
